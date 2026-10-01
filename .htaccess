@@ -1,0 +1,19 @@
+# Endurecimiento a nivel de directorio (requiere AllowOverride All; ya configurado en el contenedor)
+Options -Indexes
+
+# VUL-01: nunca servir respaldos, scripts SQL, configuración ni archivos ocultos
+<FilesMatch "(?i)(\.(sql|bak|old|orig|swp|log|ini|md|docx|zip|gz|env|lock)|~)$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^\.(?!well-known)">
+    Require all denied
+</FilesMatch>
+
+# Librería interna: no debe invocarse directamente
+<Files "setup.php">
+    Require all denied
+</Files>
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+</IfModule>

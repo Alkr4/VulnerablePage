@@ -1,22 +1,29 @@
 <?php
+declare(strict_types=1);
+
 include("setup/setup.php");
-session_start();
+iniciar_sesion();
 
-$key=$_GET['id'];
+// VUL-07/20/22: identificador validado como entero; se acepta keyid (enlace del carrito) o el restaurante de la sesión
+$key = entero_positivo($_GET['keyid'] ?? ($_GET['id'] ?? ($_SESSION['id'] ?? null)));
 
-$sql_restorant="SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id =
-direcciones.id WHERE restautantes.id = ".$key;
-$result_restorant=mysqli_query(conectar(),$sql_restorant);
-$datos_restorant=mysqli_fetch_array($result_restorant);
-
+$datos_restorant = ['nombre'=>'','foto'=>''];
+if ($key > 0) {
+    $result_restorant = consulta(
+        "SELECT restautantes.nombre, restautantes.id, restautantes.foto
+         FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
+         WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);   // VUL-20: se agrega el filtro 'eliminado'
+    $datos_restorant = $result_restorant->fetch_assoc() ?: $datos_restorant;
+}
+$carrito = (isset($_SESSION['carrito']) && is_array($_SESSION['carrito'])) ? $_SESSION['carrito'] : [];
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><?php echo $datos_restorant['nombre'];?></title>
+  <meta name="csrf-token" content="<?php echo h(csrf_token());?>">
+  <title><?php echo hu($datos_restorant['nombre']);?></title>
 	<!--<link rel="icon" href="img/Fevicon.png" type="image/png">-->
 
   <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css">
@@ -32,7 +39,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
       <div class="row">
         <div class="col-lg-4">
           <div style="text-align: center;">
-            <div class="media">
+            <div class="d-flex">
               <img class="logosintituciones" src="img/logo.png" width="170px" alt="">
             </div><br><br>
           </div>  
@@ -44,7 +51,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
               if($datos_restorant['foto']!="")
               {  
                 ?>
-                  <img class="logosintituciones" src="../imagenes/cod<?php echo $key;?>/<?php echo $datos_restorant['foto'];?>" width="170px" alt="">
+                  <img class="logosintituciones" src="imagenes/cod<?php echo (int)$key;?>/<?php echo h($datos_restorant['foto']);?>" width="170px" alt="">
               <?php
               }else{
                 ?>
@@ -57,8 +64,8 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         </div>
         <div class="col-lg-4">
           <div class="carro">
-            <div class="media float-right">
-              <a class="volver" href="index.php?id=<?php echo $_GET['keyid'];?>">
+            <div class="d-flex float-end">
+              <a class="volver" href="index.php?id=<?php echo (int)$key;?>">
               Volver a la Carta
               </a>&nbsp;&nbsp;
               <a class="limpiar" href="#">
@@ -94,15 +101,15 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                   <tbody>
                      <?php
                      $total=0;
-                     foreach ($_SESSION["carrito"] as $value) 
+                     foreach ($carrito as $value) 
                      {
                      ?>
                      <tr>
-                        <th scope="row"><?php echo $value["id"];?></th>
-                        <td><?php echo $value["nombre"];?></td>
+                        <th scope="row"><?php echo h($value["id"]);?></th>
+                        <td><?php echo hu($value["nombre"]);?></td>
                         <td><?php echo moneda_chilena($value["precio"]);?></td>
                         <td>
-                          <a class="elim" id="<?php echo $value["posicion"];?>" href="#">
+                          <a class="elim" id="<?php echo (int)$value["posicion"];?>" href="#">
                             <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash-fill text-danger" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                               <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
                             </svg>
@@ -138,13 +145,8 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 		</div>
 	</footer>
 
-  <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
+  <script src="vendors/jquery/jquery-3.7.1.min.js"></script>
   <script src="vendors/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="vendors/nice-select/jquery.nice-select.min.js"></script>
-  <script src="vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script>
-  <script src="js/main.js"></script>
   <script src="js/controladorajax.js"></script>
 </body>
 </html>
