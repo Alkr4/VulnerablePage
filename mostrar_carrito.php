@@ -2,12 +2,12 @@
 include("setup/setup.php");
 session_start();
 
-$key = entero_positivo($_GET['id'] ?? null);
+$key = entero_positivo($_GET['keyid'] ?? ($_GET['id'] ?? ($_SESSION['id'] ?? null)));
 
 $result_restorant = consulta(
-    "SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto
+    "SELECT restautantes.nombre, restautantes.id, restautantes.foto
      FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
-     WHERE restautantes.id = ?", "i", [$key]);
+     WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);   // VUL-20: se agrega el filtro 'eliminado'
 $datos_restorant = $result_restorant->fetch_assoc();
 
 ?>
@@ -59,7 +59,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
         <div class="col-lg-4">
           <div class="carro">
             <div class="d-flex float-end">
-              <a class="volver" href="index.php?id=<?php echo entero_positivo($_GET['keyid'] ?? null);?>">
+              <a class="volver" href="index.php?id=<?php echo (int)$key;?>">
               Volver a la Carta
               </a>&nbsp;&nbsp;
               <a class="limpiar" href="#">
