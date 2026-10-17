@@ -16,9 +16,13 @@ switch($_POST['op'])
 function insertar()
 {
     $_SESSION["carrito"];
-    $sql="select id, nombre, precio from items where id=".$_POST['iditems'];
-    $result=mysqli_query(conectar(),$sql);
-    $datos=mysqli_fetch_array($result);
+    $id = entero_positivo($_POST['iditems'] ?? null);
+    $result = consulta("SELECT id, nombre, precio FROM items WHERE id = ? AND visible = 1 AND eliminado IS NULL", "i", [$id]);
+    $datos = $result->fetch_assoc();
+    if (!$datos) {
+        http_response_code(404);
+        return;
+    }
 
     $pos=count($_SESSION["carrito"])+1;
     $productos = array("posicion"=>$pos,"id" => $datos['id'], "nombre" =>$datos['nombre'],"precio"=>$datos['precio']);
@@ -27,7 +31,7 @@ function insertar()
 
 function eliminaritems()
 {
-    unset($_SESSION["carrito"][$_POST['pos']]);
+    unset($_SESSION["carrito"][entero_positivo($_POST['pos'] ?? null)]);
 }
 
 function eliminartodo()
