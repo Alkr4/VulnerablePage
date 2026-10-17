@@ -17,7 +17,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><?php echo $datos_restorant['nombre'];?></title>
+  <title><?php echo hu($datos_restorant['nombre']);?></title>
 	<!--<link rel="icon" href="img/Fevicon.png" type="image/png">-->
 
   <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css">
@@ -99,11 +99,11 @@ $datos_restorant = $result_restorant->fetch_assoc();
                      {
                      ?>
                      <tr>
-                        <th scope="row"><?php echo $value["id"];?></th>
-                        <td><?php echo $value["nombre"];?></td>
+                        <th scope="row"><?php echo h($value["id"]);?></th>
+                        <td><?php echo hu($value["nombre"]);?></td>
                         <td><?php echo moneda_chilena($value["precio"]);?></td>
                         <td>
-                          <a class="elim" id="<?php echo $value["posicion"];?>" href="#">
+                          <a class="elim" id="<?php echo (int)$value["posicion"];?>" href="#">
                             <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash-fill text-danger" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                               <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
                             </svg>

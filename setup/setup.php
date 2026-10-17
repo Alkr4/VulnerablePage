@@ -41,6 +41,24 @@ function entero_positivo($valor): int
     return $n === false ? 0 : $n;
 }
 
+/** Codificación de salida HTML (contexto: contenido y atributos). */
+function h($valor): string
+{
+    return htmlspecialchars((string)($valor ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+/** Equivale al antiguo utf8_encode() (ISO-8859-1 -> UTF-8), sin la función eliminada en PHP 8.2+. */
+function latin1_a_utf8($valor): string
+{
+    return mb_convert_encoding((string)($valor ?? ''), 'UTF-8', 'ISO-8859-1');
+}
+
+/** latin1_a_utf8 + codificación de salida HTML. */
+function hu($valor): string
+{
+    return h(latin1_a_utf8($valor));
+}
+
 function quitarespacios($titulo)
 {
     $titulo =str_replace(" ", "", $titulo);

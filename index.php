@@ -19,7 +19,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><?php echo utf8_encode($datos_restorant['nombre']);?></title>
+  <title><?php echo hu($datos_restorant['nombre']);?></title>
 	<!--<link rel="icon" href="img/Fevicon.png" type="image/png">-->
 
   <link rel="stylesheet" href="vendors/bootstrap/bootstrap.min.css">
@@ -47,7 +47,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
       </form>
     <?php
     }else{
-      echo "Bienvenido :".$_SESSION['nombre']." - <a href=setup/cerrar_sesion.php>Cerra Sesión</a>";
+      echo "Bienvenido :".h($_SESSION['nombre'])." - <a href=setup/cerrar_sesion.php>Cerra Sesión</a>";
     }
   ?>
 </nav>
@@ -100,13 +100,13 @@ $datos_restorant = $result_restorant->fetch_assoc();
                {
                  ?>
                
-              <h4><?php echo utf8_encode($datos_restorant['nombre']);?></h4>
+              <h4><?php echo hu($datos_restorant['nombre']);?></h4>
               <h5>
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-geo-alt" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M12.166 8.94C12.696 7.867 13 6.862 13 6A5 5 0 0 0 3 6c0 .862.305 1.867.834 2.94.524 1.062 1.234 2.12 1.96 3.07A31.481 31.481 0 0 0 8 14.58l.208-.22a31.493 31.493 0 0 0 1.998-2.35c.726-.95 1.436-2.008 1.96-3.07zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
                   <path fill-rule="evenodd" d="M8 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                 </svg>  
-              <?php echo utf8_encode($datos_restorant['calle'])." #".$datos_restorant['numero'].", ".utf8_encode($datos_restorant['comuna']);?>
+              <?php echo hu($datos_restorant['calle'])." #".h($datos_restorant['numero']).", ".hu($datos_restorant['comuna']);?>
               </h5>
               <?php
                }
@@ -119,7 +119,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-telephone-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M2.267.98a1.636 1.636 0 0 1 2.448.152l1.681 2.162c.309.396.418.913.296 1.4l-.513 2.053a.636.636 0 0 0 .167.604L8.65 9.654a.636.636 0 0 0 .604.167l2.052-.513a1.636 1.636 0 0 1 1.401.296l2.162 1.681c.777.604.849 1.753.153 2.448l-.97.97c-.693.693-1.73.998-2.697.658a17.47 17.47 0 0 1-6.571-4.144A17.47 17.47 0 0 1 .639 4.646c-.34-.967-.035-2.004.658-2.698l.97-.969z"/>
                 </svg>  
-                <?php echo $datos_restorant['fono'];?>
+                <?php echo h($datos_restorant['fono']);?>
               <?php
               }
               if(!$datos_restorant['email']=="")
@@ -128,7 +128,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
                 </svg>
-                <?php echo $datos_restorant['email'];?>
+                <?php echo h($datos_restorant['email']);?>
                 <?php
               }
               ?>
@@ -170,9 +170,9 @@ $datos_restorant = $result_restorant->fetch_assoc();
               }
               ?>
           <div class="item-body">
-              <h3><?php echo utf8_encode($destacados['nombre']);?></h3>
-            <p><?php echo utf8_encode($destacados['descripcion']);?><br>
-            <?php echo utf8_encode($destacados['observaciones']);?><br>
+              <h3><?php echo hu($destacados['nombre']);?></h3>
+            <p><?php echo hu($destacados['descripcion']);?><br>
+            <?php echo hu($destacados['observaciones']);?><br>
             <?php
             if($destacados['tiempo']!="")
             {
@@ -181,7 +181,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z"/>
                 </svg>
-                <?php echo " ".$destacados['tiempo'];?>
+                <?php echo " ".h($destacados['tiempo']);?>
             <?php
             }
             ?>
@@ -200,7 +200,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
               <h3 class="price-tag"><?php             
               echo moneda_chilena($destacados['precio']);?></h3>
             </div>
-            <a class="button" href="#" id="<?php echo $destacados['id'];?>" style="margin:0%">Seleccionar</a>
+            <a class="button" href="#" id="<?php echo h($destacados['id']);?>" style="margin:0%">Seleccionar</a>
           </div>
         </div>
       <?php
@@ -224,9 +224,10 @@ $datos_restorant = $result_restorant->fetch_assoc();
                             $arraycartas=[];
                             while($cartas=$resultcartas->fetch_assoc())
                             {
-                              array_push($arraycartas,['nombre'=>utf8_encode(quitarespacios($cartas['nombre'])),'id'=>$cartas['id']]);
+                              $idcarta=quitarespacios(latin1_a_utf8($cartas['nombre']));
+                              array_push($arraycartas,['nombre'=>$idcarta,'id'=>$cartas['id']]);
                             ?>
-                              <a class="nav-item nav-link<?php if(count($arraycartas)==1){echo ' active';}?>" id="nav-<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>-tab" data-bs-toggle="tab" href="#<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>" role="tab" aria-controls="nav-profile" aria-selected="false"><?php echo utf8_encode($cartas['nombre']);?></a>
+                              <a class="nav-item nav-link<?php if(count($arraycartas)==1){echo ' active';}?>" id="nav-<?php echo h($idcarta);?>-tab" data-bs-toggle="tab" href="#<?php echo h($idcarta);?>" role="tab" aria-controls="nav-profile" aria-selected="false"><?php echo hu($cartas['nombre']);?></a>
                             <?php
                             }
                         ?>
@@ -237,7 +238,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                      for($i=0;$i<=sizeof($arraycartas);$i++)
                      {                             
                     ?>
-                    <div class="tab-pane fade <?php if($i==0){?>show active<?php } ?>" id="<?php echo quitarespacios($arraycartas[$i]["nombre"]);?>" role="tabpanel" aria-labelledby="nav-<?php echo quitarespacios($arraycartas[$i]["nombre"]);?>-tab">              
+                    <div class="tab-pane fade <?php if($i==0){?>show active<?php } ?>" id="<?php echo h($arraycartas[$i]["nombre"]);?>" role="tabpanel" aria-labelledby="nav-<?php echo h($arraycartas[$i]["nombre"]);?>-tab">              
                       <?php
                           $result_categorias=consulta("select id,nombre from categorias where visible=1 and cartas_id=? AND eliminado IS NULL order by orden asc","i",[(int)$arraycartas[$i]["id"]]);
                           $cont_categorias=$result_categorias->num_rows;
@@ -256,7 +257,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                               {
                               ?>
                                 <div class="section-intro mb-20px">
-                                    <h4 class="intro-title"><?php echo utf8_encode($datos_categorias['nombre']);?></h4>
+                                    <h4 class="intro-title"><?php echo hu($datos_categorias['nombre']);?></h4>
                                 </div>
 
                                 <div class="row">
@@ -284,11 +285,11 @@ $datos_restorant = $result_restorant->fetch_assoc();
                                                 ?>
                                                 <div class="flex-grow-1">
                                                   <div class="d-flex justify-content-between food-card-title">
-                                                    <h4><?php echo utf8_encode($datos_items['nombre']);?></h4>
+                                                    <h4><?php echo hu($datos_items['nombre']);?></h4>
                                                     <h3 class="price-tag"><?php echo moneda_chilena($datos_items['precio']);?></h3>
                                                   </div>
-                                                  <p><?php echo utf8_encode($datos_items['descripcion']);?></br>
-                                                  <?php echo utf8_encode($datos_items['observaciones']);?></p>
+                                                  <p><?php echo hu($datos_items['descripcion']);?></br>
+                                                  <?php echo hu($datos_items['observaciones']);?></p>
                                                   <?php
                                                   if($datos_items['tiempo']!="")
                                                   {
@@ -296,7 +297,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                                                   <p><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                       <path fill-rule="evenodd" d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z"/>
                                                       </svg>
-                                                      <?php echo " ".$datos_items['tiempo'];?></p>
+                                                      <?php echo " ".h($datos_items['tiempo']);?></p>
                                                   <?php
                                                   }
                                                   ?>
@@ -312,7 +313,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                                                           ?>
                                                         </u>
                                                       </p>
-                                                  <a class="button float-right" href="#" id="<?php echo $datos_items['id'];?>">Seleccionar</a>
+                                                  <a class="button float-right" href="#" id="<?php echo h($datos_items['id']);?>">Seleccionar</a>
                                                 </div>
                                               </div>
                                             </div>
@@ -379,7 +380,7 @@ if($key>0)
              <form action="grcomentarios.php" method="post">
               <div class="mb-3">
                 <label for="usr">Nombre:</label>
-                <input type="text" class="form-control" id="usuario" name="usuario" value="<?php echo $_SESSION['nombre'];?>">
+                <input type="text" class="form-control" id="usuario" name="usuario" value="<?php echo h($_SESSION['nombre']);?>">
               </div>
               <div class="mb-3">
                 <label for="comment">Comentario:</label>
@@ -400,9 +401,9 @@ if($key>0)
           ?>
           <div class="card bg-light">
             <div class="card-body">
-              <b><?php echo $datoscomentarios['usuario'];?></b>
+              <b><?php echo h($datoscomentarios['usuario']);?></b>
               <br>
-              <?php echo $datoscomentarios['comentario'];?>
+              <?php echo nl2br(h($datoscomentarios['comentario']));?>
             </div>
           </div>
           <br>
