@@ -380,11 +380,11 @@ if($key>0)
              <form action="grcomentarios.php" method="post">
               <div class="mb-3">
                 <label for="usr">Nombre:</label>
-                <input type="text" class="form-control" id="usuario" name="usuario" value="<?php echo h($_SESSION['nombre']);?>">
+                <input type="text" class="form-control" id="usuario" value="<?php echo h($_SESSION['nombre']);?>" readonly>
               </div>
               <div class="mb-3">
                 <label for="comment">Comentario:</label>
-                <textarea class="form-control" rows="5" id="comentario" name="comentario"></textarea>
+                <textarea class="form-control" rows="5" id="comentario" name="comentario" maxlength="1000" required></textarea>
               </div>
               <button type="submit" class="btn btn-success fa-align-right">Comentar</button>
            </form>
