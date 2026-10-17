@@ -1,9 +1,31 @@
 <?php
+declare(strict_types=1);
 
 /*
  * Configuración y utilidades comunes de seguridad.
  * Se incluye al inicio de cada script PHP.
  */
+
+// ---------------------------------------------------------------------------
+// Manejo de errores (VUL-13, ISO 27034 / ASVS V16): nunca mostrar detalles al cliente.
+// ---------------------------------------------------------------------------
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+// mysqli lanza excepciones en lugar de warnings; se capturan en el manejador global.
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+set_exception_handler(function (Throwable $e): void {
+    error_log('[pnkSecurity] ' . get_class($e) . ': ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine());
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: text/html; charset=UTF-8');
+    }
+    echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Error</title></head>'
+       . '<body><h1>Error interno</h1><p>Ocurrió un problema al procesar la solicitud.</p></body></html>';
+    exit;
+});
 
 // ---------------------------------------------------------------------------
 // Cabeceras de seguridad HTTP (VUL-11, VUL-12)
@@ -179,7 +201,7 @@ function hu($valor): string
 
 function quitarespacios($titulo)
 {
-    $titulo =str_replace(" ", "", $titulo);
+    $titulo =str_replace(" ", "", (string)$titulo);
     $cadena =str_replace("ñ", "", $titulo);
     $cadena =str_replace("Ñ", "", $cadena);
     return $cadena;
@@ -187,17 +209,13 @@ function quitarespacios($titulo)
 
 function moneda_chilena($numero){
     $numero = (string)$numero;
-    $puntos = floor((strlen($numero)-1)/3);
     $tmp = "";
     $pos = 1;
     for($i=strlen($numero)-1; $i>=0; $i--){
-    $tmp = $tmp.substr($numero, $i, 1);
-    if($pos%3==0 && $pos!=strlen($numero))
-    $tmp = $tmp.".";
-    $pos = $pos + 1;
+        $tmp = $tmp.substr($numero, $i, 1);
+        if($pos%3==0 && $pos!=strlen($numero))
+            $tmp = $tmp.".";
+        $pos = $pos + 1;
     }
-    $formateado = "$ ".strrev($tmp);
-    return $formateado;
-    }
-
-?>
+    return "$ ".strrev($tmp);
+}

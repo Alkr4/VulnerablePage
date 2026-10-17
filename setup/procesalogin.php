@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-include("setup.php");
+include(__DIR__ . "/setup.php");
 iniciar_sesion();
 exigir_post_csrf();
 

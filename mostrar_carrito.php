@@ -1,15 +1,21 @@
 <?php
+declare(strict_types=1);
+
 include("setup/setup.php");
 iniciar_sesion();
 
+// VUL-07/20/22: identificador validado como entero; se acepta keyid (enlace del carrito) o el restaurante de la sesión
 $key = entero_positivo($_GET['keyid'] ?? ($_GET['id'] ?? ($_SESSION['id'] ?? null)));
 
-$result_restorant = consulta(
-    "SELECT restautantes.nombre, restautantes.id, restautantes.foto
-     FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
-     WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);   // VUL-20: se agrega el filtro 'eliminado'
-$datos_restorant = $result_restorant->fetch_assoc();
-
+$datos_restorant = ['nombre'=>'','foto'=>''];
+if ($key > 0) {
+    $result_restorant = consulta(
+        "SELECT restautantes.nombre, restautantes.id, restautantes.foto
+         FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
+         WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);   // VUL-20: se agrega el filtro 'eliminado'
+    $datos_restorant = $result_restorant->fetch_assoc() ?: $datos_restorant;
+}
+$carrito = (isset($_SESSION['carrito']) && is_array($_SESSION['carrito'])) ? $_SESSION['carrito'] : [];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -95,7 +101,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                   <tbody>
                      <?php
                      $total=0;
-                     foreach ($_SESSION["carrito"] as $value) 
+                     foreach ($carrito as $value) 
                      {
                      ?>
                      <tr>

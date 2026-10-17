@@ -1,17 +1,21 @@
 <?php
+declare(strict_types=1);
 
 include("setup/setup.php");
 iniciar_sesion();
 
+// VUL-03/06/22: el identificador se valida como entero positivo (0 = sin restaurante)
 $key = entero_positivo($_GET['id'] ?? null);
 $_SESSION['id'] = $key;
 
-$result_restorant = consulta(
-    "SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto
-     FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
-     WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);
-$datos_restorant = $result_restorant->fetch_assoc();
-
+$datos_restorant = ['calle'=>'','numero'=>'','comuna'=>'','region'=>'','nombre'=>'','id'=>0,'fono'=>'','email'=>'','foto'=>''];
+if ($key > 0) {
+    $result_restorant = consulta(
+        "SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto
+         FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
+         WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);
+    $datos_restorant = $result_restorant->fetch_assoc() ?: $datos_restorant;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -191,7 +195,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
             <div class="d-flex justify-content-between">
               <ul class="rating-star">
                 <?php
-                for($i=1;$i<=$destacados['puntuacion'];$i++)
+                for($i=1;$i<=(int)$destacados['puntuacion'];$i++)
                 {
                   ?>
                     <li><i class="ti-star"></i></li>
@@ -237,7 +241,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                   </nav>
                   <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                     <?php
-                     for($i=0;$i<=sizeof($arraycartas);$i++)
+                     for($i=0;$i<count($arraycartas);$i++)
                      {                             
                     ?>
                     <div class="tab-pane fade <?php if($i==0){?>show active<?php } ?>" id="<?php echo h($arraycartas[$i]["nombre"]);?>" role="tabpanel" aria-labelledby="nav-<?php echo h($arraycartas[$i]["nombre"]);?>-tab">              
@@ -306,7 +310,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                                                       <p>
                                                         <ul class="rating-star">
                                                           <?php
-                                                          for($k=1;$k<=$datos_items['puntuacion'];$k++)
+                                                          for($k=1;$k<=(int)$datos_items['puntuacion'];$k++)
                                                           {
                                                             ?>
                                                               <li><i class="ti-star"></i></li>

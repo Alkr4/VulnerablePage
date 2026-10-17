@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 include("setup/setup.php");
 iniciar_sesion();

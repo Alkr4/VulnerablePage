@@ -1,10 +1,15 @@
 <?php
+declare(strict_types=1);
 
 include("setup/setup.php");
 iniciar_sesion();
 exigir_post_csrf();
 
-switch($_POST['op'])
+if (!isset($_SESSION["carrito"]) || !is_array($_SESSION["carrito"])) {
+    $_SESSION["carrito"] = [];
+}
+
+switch ($_POST['op'] ?? '')
 {
     case "1": insertar();
         break;
@@ -12,31 +17,34 @@ switch($_POST['op'])
         break;
     case "3": eliminartodo();
         break;
+    default:
+        http_response_code(400);
 }
 
 function insertar()
 {
-    $_SESSION["carrito"];
-    $id = entero_positivo($_POST['iditems'] ?? null);
-    $result = consulta("SELECT id, nombre, precio FROM items WHERE id = ? AND visible = 1 AND eliminado IS NULL", "i", [$id]);
-    $datos = $result->fetch_assoc();
+    $id = entero_positivo($_POST['iditems'] ?? null);   // VUL-04
+    $res = $id > 0
+        ? consulta("SELECT id, nombre, precio FROM items WHERE id = ? AND visible = 1 AND eliminado IS NULL", "i", [$id])
+        : null;
+    $datos = $res ? $res->fetch_assoc() : null;
     if (!$datos) {
         http_response_code(404);
         return;
     }
 
-    $pos=count($_SESSION["carrito"])+1;
-    $productos = array("posicion"=>$pos,"id" => $datos['id'], "nombre" =>$datos['nombre'],"precio"=>$datos['precio']);
-    $_SESSION["carrito"][$pos] = $productos;
+    $pos = $_SESSION["carrito"] ? max(array_keys($_SESSION["carrito"])) + 1 : 1;
+    $_SESSION["carrito"][$pos] = ["posicion" => $pos, "id" => $datos['id'], "nombre" => $datos['nombre'], "precio" => $datos['precio']];
 }
 
 function eliminaritems()
 {
-    unset($_SESSION["carrito"][entero_positivo($_POST['pos'] ?? null)]);
+    $pos = entero_positivo($_POST['pos'] ?? null);
+    unset($_SESSION["carrito"][$pos]);
 }
 
 function eliminartodo()
 {
-    $_SESSION["carrito"] = [];   // sólo se vacía el carrito; antes se destruía la sesión completa (cerraba el login)
+    // Sólo se vacía el carrito; ya no se destruye la sesión completa (antes cerraba el login).
+    $_SESSION["carrito"] = [];
 }
-?>
