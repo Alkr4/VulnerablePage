@@ -2,18 +2,21 @@
 
 include("setup.php");
 
-$sql="select * from usuarios where email='".$_POST['frmusuario']."' and password='".$_POST['frmpassword']."'";
-$result=mysqli_query(conectar(),$sql);
-$cont_login=mysqli_num_rows($result);
-$datos=mysqli_fetch_array($result);
+$email    = is_string($_POST['frmusuario'] ?? null) ? trim($_POST['frmusuario']) : '';
+$password = is_string($_POST['frmpassword'] ?? null) ? $_POST['frmpassword'] : '';
 
-if($cont_login!=0)
+$fila = null;
+if ($email !== '' && strlen($email) <= 255 && strlen($password) <= 1024) {
+    $res  = consulta("SELECT nombre, password FROM usuarios WHERE email = ? LIMIT 1", "s", [$email]);
+    $fila = $res->fetch_assoc();
+}
+
+if ($fila !== null && $fila['password'] === $password)
 {
     session_start();
-    $_SESSION['nombre']=$datos['nombre'];
-    header('Location:../index.php');
-}else{
-    header('Location:../index.php'); 
+    $_SESSION['nombre'] = $fila['nombre'];
 }
+
+header('Location:../index.php');
 
 ?>

@@ -37,13 +37,13 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
     if(!isset($_SESSION['nombre']))
     {
     ?>
-      <form class="d-flex flex-wrap align-items-center gap-2" role="search" action="setup/procesalogin.php" method="post">
+      <form class="d-flex flex-wrap align-items-center gap-2" role="search" action="setup/procesalogin.php" method="post" autocomplete="off">
         <div class="input-group w-auto">
           <span class="input-group-text" id="basic-addon1">@</span>
-          <input type="text" class="form-control" name="frmusuario" placeholder="Usuario">
+          <input type="text" class="form-control" name="frmusuario" placeholder="Usuario" maxlength="255" required>
         </div>
         <div>
-          <input type="password" class="form-control" name="frmpassword" placeholder="Contraseña">
+          <input type="password" class="form-control" name="frmpassword" placeholder="Contraseña" maxlength="1024" required>
         </div>
         <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">Ingresar</button>
       </form>
