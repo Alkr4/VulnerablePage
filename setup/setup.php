@@ -31,6 +31,16 @@ function consulta(string $sql, string $tipos = '', array $params = [])
     return $res === false ? true : $res;
 }
 
+// ---------------------------------------------------------------------------
+// Validación y salida segura (VUL-06/07/08, VUL-22)
+// ---------------------------------------------------------------------------
+/** Entero positivo o 0 si el valor no es un entero válido. */
+function entero_positivo($valor): int
+{
+    $n = filter_var($valor, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    return $n === false ? 0 : $n;
+}
+
 function quitarespacios($titulo)
 {
     $titulo =str_replace(" ", "", $titulo);

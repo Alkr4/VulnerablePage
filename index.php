@@ -3,16 +3,14 @@
 include("setup/setup.php");
 session_start();
 
-mysqli_set_charset(conectar(), 'utf8');
-$key=$_GET['id'];
-$_SESSION['id']=$_GET['id'];
+$key = entero_positivo($_GET['id'] ?? null);
+$_SESSION['id'] = $key;
 
-$sql_restorant="SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id =
-direcciones.id WHERE restautantes.id = ".$key." AND restautantes.eliminado IS NULL";
-$result_restorant=mysqli_query(conectar(),$sql_restorant);
-$datos_restorant=mysqli_fetch_array($result_restorant);
-
-
+$result_restorant = consulta(
+    "SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto
+     FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
+     WHERE restautantes.id = ? AND restautantes.eliminado IS NULL", "i", [$key]);
+$datos_restorant = $result_restorant->fetch_assoc();
 
 ?>
 <!DOCTYPE html>
@@ -98,7 +96,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         <div class="col-lg-12">
             <div class="text-center">
             <?php
-               if($key!="")
+               if($key>0)
                {
                  ?>
                
@@ -142,10 +140,9 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
   </section>
   <!--DESTACADOS-->
   <?php
-  $sql="SELECT items.id,items.visible,items.tiempo,items.puntuacion,items.destacado, items.precio, items.descripcion,items.observaciones, items.nombre, items.foto, items.orden, cartas.restautantes_id, categorias.visible FROM categorias INNER JOIN items ON items.categorias_id = categorias.id INNER JOIN cartas ON categorias.cartas_id = cartas.id
-  WHERE items.destacado = 1 AND items.eliminado IS NULL AND items.visible=1 AND cartas.restautantes_id = ".$key." AND cartas.eliminada IS NULL AND categorias.visible = 1 AND categorias.eliminado IS NULL";
-  $result=mysqli_query(conectar(),$sql);
-  $cont_destacados=mysqli_num_rows($result);
+  $result=consulta("SELECT items.id,items.visible,items.tiempo,items.puntuacion,items.destacado, items.precio, items.descripcion,items.observaciones, items.nombre, items.foto, items.orden, cartas.restautantes_id, categorias.visible FROM categorias INNER JOIN items ON items.categorias_id = categorias.id INNER JOIN cartas ON categorias.cartas_id = cartas.id
+  WHERE items.destacado = 1 AND items.eliminado IS NULL AND items.visible=1 AND cartas.restautantes_id = ? AND cartas.eliminada IS NULL AND categorias.visible = 1 AND categorias.eliminado IS NULL","i",[$key]);
+  $cont_destacados=$result->num_rows;
   if( $cont_destacados!=0)
   {
   ?>
@@ -156,7 +153,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
       </div>
       <div class="owl-carousel owl-theme featured-carousel">
       <?php
-      while($destacados=mysqli_fetch_array($result))
+      while($destacados=$result->fetch_assoc())
       {
       ?>
         <div class="featured-item">
@@ -223,10 +220,9 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                   <nav>
                     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                         <?php
-                            $sqlcartas="SELECT cartas.id,cartas.restautantes_id,cartas.nombre,cartas.orden,cartas.visible FROM cartas WHERE cartas.restautantes_id = ".$key." and visible=1 AND eliminada IS NULL order by orden asc";
-                            $resultcartas=mysqli_query(conectar(),$sqlcartas);
+                            $resultcartas=consulta("SELECT cartas.id,cartas.restautantes_id,cartas.nombre,cartas.orden,cartas.visible FROM cartas WHERE cartas.restautantes_id = ? and visible=1 AND eliminada IS NULL order by orden asc","i",[$key]);
                             $arraycartas=[];
-                            while($cartas=mysqli_fetch_array($resultcartas))
+                            while($cartas=$resultcartas->fetch_assoc())
                             {
                               array_push($arraycartas,['nombre'=>utf8_encode(quitarespacios($cartas['nombre'])),'id'=>$cartas['id']]);
                             ?>
@@ -243,9 +239,8 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                     ?>
                     <div class="tab-pane fade <?php if($i==0){?>show active<?php } ?>" id="<?php echo quitarespacios($arraycartas[$i]["nombre"]);?>" role="tabpanel" aria-labelledby="nav-<?php echo quitarespacios($arraycartas[$i]["nombre"]);?>-tab">              
                       <?php
-                          $sql_categorias="select id,nombre from categorias where visible=1 and cartas_id='".$arraycartas[$i]["id"]."' AND eliminado IS NULL order by orden asc";
-                          $result_categorias=mysqli_query(conectar(),$sql_categorias);
-                          $cont_categorias=mysqli_num_rows($result_categorias);
+                          $result_categorias=consulta("select id,nombre from categorias where visible=1 and cartas_id=? AND eliminado IS NULL order by orden asc","i",[(int)$arraycartas[$i]["id"]]);
+                          $cont_categorias=$result_categorias->num_rows;
                           if($cont_categorias==0)
                           {?>
                               <div class="row">
@@ -257,7 +252,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                               </div>
                           <?php
                           }else{
-                              while($datos_categorias=mysqli_fetch_array($result_categorias))
+                              while($datos_categorias=$result_categorias->fetch_assoc())
                               {
                               ?>
                                 <div class="section-intro mb-20px">
@@ -266,12 +261,11 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 
                                 <div class="row">
                                   <?php
-                                      $sql_items="SELECT items.visible,items.id, items.nombre, items.descripcion,items.observaciones,items.tiempo,items.puntuacion, items.precio, items.visible, items.foto, items.orden, items.categorias_id FROM items WHERE items.categorias_id = ".$datos_categorias['id']." AND items.visible=1 AND eliminado IS NULL order by orden asc";
-                                      $result_items=mysqli_query(conectar(),$sql_items);
-                                      $count_items=mysqli_num_rows($result_items);
+                                      $result_items=consulta("SELECT items.visible,items.id, items.nombre, items.descripcion,items.observaciones,items.tiempo,items.puntuacion, items.precio, items.visible, items.foto, items.orden, items.categorias_id FROM items WHERE items.categorias_id = ? AND items.visible=1 AND eliminado IS NULL order by orden asc","i",[(int)$datos_categorias['id']]);
+                                      $count_items=$result_items->num_rows;
                                       if($count_items!=0)
                                       {
-                                            while($datos_items=mysqli_fetch_array($result_items))
+                                            while($datos_items=$result_items->fetch_assoc())
                                             {
                                             ?>
                                             <div class="<?php if($count_items>1){ ?>col-lg-6 <?php }else{ ?>col-lg-12<?php } ?>">
@@ -368,7 +362,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 
 <?php
 
-if(isset($key))
+if($key>0)
 {
 ?>
 <section>
@@ -400,9 +394,8 @@ if(isset($key))
           <br>
           <?php
 
-            $sqlcomentarios="select * from comentarios where id_restaurante=".$key;
-            $resultcomentarios=mysqli_query(conectar(),$sqlcomentarios);
-            while($datoscomentarios=mysqli_fetch_array($resultcomentarios))
+            $resultcomentarios=consulta("select usuario, comentario from comentarios where id_restaurante=?","i",[$key]);
+            while($datoscomentarios=$resultcomentarios->fetch_assoc())
             {
           ?>
           <div class="card bg-light">
