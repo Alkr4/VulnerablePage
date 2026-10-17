@@ -1,7 +1,7 @@
 <?php
 
 include("setup/setup.php");
-session_start();
+iniciar_sesion();
 
 // VUL-09: sólo usuarios autenticados pueden comentar
 if (empty($_SESSION['nombre'])) {

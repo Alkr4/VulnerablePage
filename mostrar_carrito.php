@@ -1,6 +1,6 @@
 <?php
 include("setup/setup.php");
-session_start();
+iniciar_sesion();
 
 $key = entero_positivo($_GET['keyid'] ?? ($_GET['id'] ?? ($_SESSION['id'] ?? null)));
 

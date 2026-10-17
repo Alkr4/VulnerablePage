@@ -13,7 +13,7 @@ if ($email !== '' && strlen($email) <= 255 && strlen($password) <= 1024) {
 
 if ($fila !== null && $fila['password'] === $password)
 {
-    session_start();
+    iniciar_sesion();
     $_SESSION['nombre'] = $fila['nombre'];
 }
 

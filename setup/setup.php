@@ -5,6 +5,32 @@
  * Se incluye al inicio de cada script PHP.
  */
 
+function es_https(): bool
+{
+    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+}
+
+// ---------------------------------------------------------------------------
+// Sesión segura (VUL-10, VUL-15)
+// ---------------------------------------------------------------------------
+function iniciar_sesion(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        return;
+    }
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'secure'   => es_https(),   // Se activa automáticamente cuando el sitio se sirva por HTTPS
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
+
 // ---------------------------------------------------------------------------
 // Base de datos (VUL-19, VUL-21)
 // ---------------------------------------------------------------------------
