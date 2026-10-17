@@ -40,7 +40,21 @@ if ($email !== '' && strlen($email) <= 255 && strlen($password) <= 1024) {
     $fila = $res->fetch_assoc();
 }
 
-$ok = $fila !== null && $fila['password'] === $password;
+/*
+ * VUL-17: se acepta un hash moderno (password_hash / bcrypt / argon2) y, de forma transitoria,
+ * las contraseñas heredadas en texto plano (la tabla aún no ha sido migrada). Cuando se migre la
+ * columna a hashes, este código ya es compatible sin cambios.
+ */
+$ok = false;
+if ($fila !== null) {
+    $almacenada = (string)$fila['password'];
+    $ok = password_get_info($almacenada)['algo'] !== null
+        ? password_verify($password, $almacenada)
+        : hash_equals($almacenada, $password);
+} else {
+    // Trabajo equivalente para no filtrar por tiempo si el usuario existe
+    password_verify($password, '$2y$10$usesomesillystringforsaltdummyhashvalueforconstanttimexx');
+}
 
 if ($ok) {
     @unlink($archivo);
