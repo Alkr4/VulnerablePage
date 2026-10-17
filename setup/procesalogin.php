@@ -14,6 +14,7 @@ if ($email !== '' && strlen($email) <= 255 && strlen($password) <= 1024) {
 if ($fila !== null && $fila['password'] === $password)
 {
     iniciar_sesion();
+    session_regenerate_id(true);              // VUL-15: nuevo ID al cambiar de privilegio
     $_SESSION['nombre'] = $fila['nombre'];
 }
 

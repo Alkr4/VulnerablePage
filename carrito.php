@@ -36,6 +36,6 @@ function eliminaritems()
 
 function eliminartodo()
 {
-    session_destroy();
+    $_SESSION["carrito"] = [];   // sólo se vacía el carrito; antes se destruía la sesión completa (cerraba el login)
 }
 ?>
