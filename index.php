@@ -35,6 +35,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
     if(!isset($_SESSION['nombre']))
     {
     ?>
+      <?php if (!empty($_SESSION['flash'])) { echo '<span class="text-danger small ms-2">'.h($_SESSION['flash']).'</span>'; unset($_SESSION['flash']); } ?>
       <form class="d-flex flex-wrap align-items-center gap-2" role="search" action="setup/procesalogin.php" method="post" autocomplete="off">
         <?php echo csrf_campo();?>
         <div class="input-group w-auto">
