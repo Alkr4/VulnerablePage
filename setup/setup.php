@@ -5,6 +5,21 @@
  * Se incluye al inicio de cada script PHP.
  */
 
+// ---------------------------------------------------------------------------
+// Cabeceras de seguridad HTTP (VUL-11, VUL-12)
+// ---------------------------------------------------------------------------
+header("Content-Security-Policy: default-src 'self'; script-src 'self'; "
+     . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+     . "font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; "
+     . "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+if (es_https()) {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+}
+
 function es_https(): bool
 {
     return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
