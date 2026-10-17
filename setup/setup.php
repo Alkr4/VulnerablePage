@@ -91,9 +91,29 @@ function exigir_post_csrf(): void
 // ---------------------------------------------------------------------------
 // Base de datos (VUL-19, VUL-21)
 // ---------------------------------------------------------------------------
-function conectar()
+/**
+ * Conexión única. Las credenciales se leen del entorno (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS)
+ * y no del código fuente. Si no están definidas se usa el valor histórico del laboratorio
+ * (root sin contraseña) y se deja constancia en el log, para no romper el despliegue actual.
+ */
+function conectar(): mysqli
 {
-    $con=mysqli_connect("localhost","root","","pnk_security");
+    static $con = null;
+    if ($con === null) {
+        $host = getenv('DB_HOST') ?: 'localhost';
+        $name = getenv('DB_NAME') ?: 'pnk_security';
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASS');
+        if ($user === false || $user === '') {
+            error_log('[pnkSecurity] ADVERTENCIA: DB_USER no definido; usando credenciales heredadas. Definir DB_USER/DB_PASS con un usuario de mínimos privilegios.');
+            $user = 'root';
+            $pass = '';
+        }
+        $con = mysqli_connect($host, $user, $pass === false ? '' : $pass, $name, (int)(getenv('DB_PORT') ?: 3306));
+        // Se fija el juego de caracteres de forma explícita (el código histórico asume latin1 + utf8_encode);
+        // así el resultado no depende del valor por defecto de la versión de PHP/MySQL.
+        $con->set_charset('latin1');
+    }
     return $con;
 }
 
@@ -103,8 +123,7 @@ function conectar()
  */
 function consulta(string $sql, string $tipos = '', array $params = [])
 {
-    $con  = conectar();   // la conexión debe seguir referenciada mientras se ejecuta la sentencia
-    $stmt = $con->prepare($sql);
+    $stmt = conectar()->prepare($sql);
     if ($tipos !== '') {
         $stmt->bind_param($tipos, ...$params);
     }
