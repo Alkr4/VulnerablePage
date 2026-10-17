@@ -18,7 +18,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="csrf-token" content="<?php echo h(csrf_token());?>">
   <title><?php echo hu($datos_restorant['nombre']);?></title>
 	<!--<link rel="icon" href="img/Fevicon.png" type="image/png">-->
 
@@ -36,6 +36,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
     {
     ?>
       <form class="d-flex flex-wrap align-items-center gap-2" role="search" action="setup/procesalogin.php" method="post" autocomplete="off">
+        <?php echo csrf_campo();?>
         <div class="input-group w-auto">
           <span class="input-group-text" id="basic-addon1">@</span>
           <input type="text" class="form-control" name="frmusuario" placeholder="Usuario" maxlength="255" required>
@@ -47,7 +48,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
       </form>
     <?php
     }else{
-      echo "Bienvenido :".h($_SESSION['nombre'])." - <a href=setup/cerrar_sesion.php>Cerra Sesión</a>";
+      echo '<form class="d-flex align-items-center gap-2 m-0" action="setup/cerrar_sesion.php" method="post">Bienvenido: '.h($_SESSION['nombre']).' - '.csrf_campo().'<button type="submit" class="btn btn-link p-0">Cerrar Sesión</button></form>';
     }
   ?>
 </nav>
@@ -378,6 +379,7 @@ if($key>0)
             {
              ?>
              <form action="grcomentarios.php" method="post">
+              <?php echo csrf_campo();?>
               <div class="mb-3">
                 <label for="usr">Nombre:</label>
                 <input type="text" class="form-control" id="usuario" value="<?php echo h($_SESSION['nombre']);?>" readonly>

@@ -50,6 +50,45 @@ function destruir_sesion(): void
 }
 
 // ---------------------------------------------------------------------------
+// CSRF (VUL-14)
+// ---------------------------------------------------------------------------
+function csrf_token(): string
+{
+    iniciar_sesion();
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf'];
+}
+
+function csrf_campo(): string
+{
+    return '<input type="hidden" name="csrf" value="' . h(csrf_token()) . '">';
+}
+
+/** Valida el token recibido por POST (campo "csrf") o por cabecera X-CSRF-Token (AJAX). */
+function csrf_validar(): bool
+{
+    iniciar_sesion();
+    $enviado = $_POST['csrf'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    return is_string($enviado) && !empty($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $enviado);
+}
+
+/** Corta la petición si no es POST o si el token CSRF es inválido. */
+function exigir_post_csrf(): void
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+        header('Allow: POST');
+        http_response_code(405);
+        exit;
+    }
+    if (!csrf_validar()) {
+        http_response_code(403);
+        exit('Solicitud no válida.');
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Base de datos (VUL-19, VUL-21)
 // ---------------------------------------------------------------------------
 function conectar()

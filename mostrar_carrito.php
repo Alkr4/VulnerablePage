@@ -16,7 +16,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="csrf-token" content="<?php echo h(csrf_token());?>">
   <title><?php echo hu($datos_restorant['nombre']);?></title>
 	<!--<link rel="icon" href="img/Fevicon.png" type="image/png">-->
 

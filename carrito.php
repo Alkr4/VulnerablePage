@@ -2,6 +2,7 @@
 
 include("setup/setup.php");
 iniciar_sesion();
+exigir_post_csrf();
 
 switch($_POST['op'])
 {

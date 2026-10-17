@@ -1,6 +1,11 @@
 // JavaScript Document
+// Las peticiones que cambian estado envían el token CSRF en la cabecera X-CSRF-Token (VUL-14).
 
 $(document).ready(function(){
+   $.ajaxSetup({
+     headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
+   });
+
    $('.button').on('click', function(e){
      e.preventDefault();
      agregaritems($(this).attr('id'));

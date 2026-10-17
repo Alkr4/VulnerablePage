@@ -2,6 +2,7 @@
 
 include("setup/setup.php");
 iniciar_sesion();
+exigir_post_csrf();
 
 // VUL-09: sólo usuarios autenticados pueden comentar
 if (empty($_SESSION['nombre'])) {
