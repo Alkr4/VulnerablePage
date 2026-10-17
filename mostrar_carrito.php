@@ -45,7 +45,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
               if($datos_restorant['foto']!="")
               {  
                 ?>
-                  <img class="logosintituciones" src="../imagenes/cod<?php echo $key;?>/<?php echo $datos_restorant['foto'];?>" width="170px" alt="">
+                  <img class="logosintituciones" src="imagenes/cod<?php echo (int)$key;?>/<?php echo h($datos_restorant['foto']);?>" width="170px" alt="">
               <?php
               }else{
                 ?>

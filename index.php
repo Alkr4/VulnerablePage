@@ -68,7 +68,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
               if($datos_restorant['foto']!="")
               {  
                 ?>
-                  <img class="logosintituciones" src="imagenes/cod<?php echo $key;?>/<?php echo $datos_restorant['foto'];?>" width="170px" alt="">
+                  <img class="logosintituciones" src="imagenes/cod<?php echo (int)$key;?>/<?php echo h($datos_restorant['foto']);?>" width="170px" alt="">
               <?php
               }else{
                 ?>
@@ -161,7 +161,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
               if($destacados['foto']!="")
               {  
                 ?>
-                  <img class="card-img rounded-0" width="350px" height="235px" src="imagenes/cod<?php echo $key;?>/<?php echo $destacados['foto'];?>" alt="">
+                  <img class="card-img rounded-0" width="350px" height="235px" src="imagenes/cod<?php echo (int)$key;?>/<?php echo h($destacados['foto']);?>" alt="">
               <?php
               }else{
                 ?>
@@ -279,7 +279,7 @@ $datos_restorant = $result_restorant->fetch_assoc();
                                                 <?php
                                                 }else{
                                                   ?>
-                                                <img class="me-3 me-sm-4" src="imagenes/cod<?php echo $key;?>/<?php echo $datos_items['foto'];?>" alt="" width="120px">
+                                                <img class="me-3 me-sm-4" src="imagenes/cod<?php echo (int)$key;?>/<?php echo h($datos_items['foto']);?>" alt="" width="120px">
                                                   <?php
                                                 }
                                                 ?>
