@@ -1,9 +1,34 @@
 <?php
 
+/*
+ * Configuración y utilidades comunes de seguridad.
+ * Se incluye al inicio de cada script PHP.
+ */
+
+// ---------------------------------------------------------------------------
+// Base de datos (VUL-19, VUL-21)
+// ---------------------------------------------------------------------------
 function conectar()
 {
     $con=mysqli_connect("localhost","root","","pnk_security");
     return $con;
+}
+
+/**
+ * Consulta parametrizada. $tipos usa los mismos códigos de bind_param ("i", "s", ...).
+ * Devuelve el mysqli_result para consultas SELECT, o true para INSERT/UPDATE/DELETE.
+ */
+function consulta(string $sql, string $tipos = '', array $params = [])
+{
+    $con  = conectar();   // la conexión debe seguir referenciada mientras se ejecuta la sentencia
+    $stmt = $con->prepare($sql);
+    if ($tipos !== '') {
+        $stmt->bind_param($tipos, ...$params);
+    }
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $stmt->close();
+    return $res === false ? true : $res;
 }
 
 function quitarespacios($titulo)
