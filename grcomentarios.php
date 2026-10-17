@@ -3,10 +3,13 @@
 include("setup/setup.php");
 session_start();
 
-$sql="INSERT INTO comentarios SET usuario='".$_POST['usuario']."',comentario='".$_POST['comentario']."',id_restaurante=".$_SESSION['id'];
-mysqli_query(conectar(),$sql);
+$id_restaurante = entero_positivo($_SESSION['id'] ?? 0);
 
-header('Location:index.php?id='.$_SESSION['id'])
+consulta(
+    "INSERT INTO comentarios (usuario, comentario, id_restaurante) VALUES (?, ?, ?)",
+    "ssi",
+    [(string)($_POST['usuario'] ?? ''), (string)($_POST['comentario'] ?? ''), $id_restaurante]
+);
 
-
-?>
+header('Location: index.php?id=' . $id_restaurante);
+exit;
