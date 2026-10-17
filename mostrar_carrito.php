@@ -2,12 +2,13 @@
 include("setup/setup.php");
 session_start();
 
-$key=$_GET['id'];
+$key = entero_positivo($_GET['id'] ?? null);
 
-$sql_restorant="SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id =
-direcciones.id WHERE restautantes.id = ".$key;
-$result_restorant=mysqli_query(conectar(),$sql_restorant);
-$datos_restorant=mysqli_fetch_array($result_restorant);
+$result_restorant = consulta(
+    "SELECT direcciones.calle, direcciones.numero, direcciones.comuna, direcciones.region, restautantes.nombre, restautantes.id, restautantes.fono, restautantes.email, restautantes.foto
+     FROM restautantes INNER JOIN direcciones ON restautantes.direcciones_id = direcciones.id
+     WHERE restautantes.id = ?", "i", [$key]);
+$datos_restorant = $result_restorant->fetch_assoc();
 
 ?>
 <!DOCTYPE html>
@@ -58,7 +59,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         <div class="col-lg-4">
           <div class="carro">
             <div class="d-flex float-end">
-              <a class="volver" href="index.php?id=<?php echo $_GET['keyid'];?>">
+              <a class="volver" href="index.php?id=<?php echo entero_positivo($_GET['keyid'] ?? null);?>">
               Volver a la Carta
               </a>&nbsp;&nbsp;
               <a class="limpiar" href="#">
