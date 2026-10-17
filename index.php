@@ -16,7 +16,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,15 +37,13 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
     if(!isset($_SESSION['nombre']))
     {
     ?>
-      <form class="form-inline" role="search" action="setup/procesalogin.php" method="post">
-        <div class="form-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">@</span>
-          </div>
-            <input type="text" class="form-control" name="frmusuario" placeholder="Usuario">
+      <form class="d-flex flex-wrap align-items-center gap-2" role="search" action="setup/procesalogin.php" method="post">
+        <div class="input-group w-auto">
+          <span class="input-group-text" id="basic-addon1">@</span>
+          <input type="text" class="form-control" name="frmusuario" placeholder="Usuario">
         </div>
-        <div class="form-group">
-            <input type="password" class="form-control" name="frmpassword" placeholder="Contraseña">
+        <div>
+          <input type="password" class="form-control" name="frmpassword" placeholder="Contraseña">
         </div>
         <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">Ingresar</button>
       </form>
@@ -60,14 +58,14 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
       <div class="row">
         <div class="col-lg-4">
           <div style="text-align: center;">
-            <div class="media">
+            <div class="d-flex">
               <img class="logosintituciones" src="img/logo.png" width="190px" alt="">
             </div>
           </div>  
         </div>
         <div class="col-lg-4">
           <div style="text-align: center;">
-            <div class="media">
+            <div class="d-flex">
               <?php
               if($datos_restorant['foto']!="")
               {  
@@ -85,7 +83,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         </div>
         <div class="col-lg-4">
           <div class="carro">
-            <div class="media float-right">
+            <div class="d-flex float-end">
               <a class="button_carrito" href="mostrar_carrito.php?keyid=<?php echo $_GET['id'];?>">
               <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-cart4" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
@@ -232,7 +230,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                             {
                               array_push($arraycartas,['nombre'=>utf8_encode(quitarespacios($cartas['nombre'])),'id'=>$cartas['id']]);
                             ?>
-                              <a class="nav-item nav-link" id="nav-<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>-tab" data-toggle="tab" href="#<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>" role="tab" aria-controls="nav-profile" aria-selected="false"><?php echo utf8_encode($cartas['nombre']);?></a>
+                              <a class="nav-item nav-link<?php if(count($arraycartas)==1){echo ' active';}?>" id="nav-<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>-tab" data-bs-toggle="tab" href="#<?php echo quitarespacios(utf8_encode($cartas['nombre']));?>" role="tab" aria-controls="nav-profile" aria-selected="false"><?php echo utf8_encode($cartas['nombre']);?></a>
                             <?php
                             }
                         ?>
@@ -277,20 +275,20 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
                                             {
                                             ?>
                                             <div class="<?php if($count_items>1){ ?>col-lg-6 <?php }else{ ?>col-lg-12<?php } ?>">
-                                              <div class="media align-items-center food-card">
+                                              <div class="d-flex align-items-center food-card">
                                                 <?php
                                                 if($datos_items['foto']=="")
                                                 {
                                                 ?>
-                                                <img class="mr-3 mr-sm-4" src="img/carta_comodin.png" alt="" width="120px">
+                                                <img class="me-3 me-sm-4" src="img/carta_comodin.png" alt="" width="120px">
                                                 <?php
                                                 }else{
                                                   ?>
-                                                <img class="mr-3 mr-sm-4" src="imagenes/cod<?php echo $key;?>/<?php echo $datos_items['foto'];?>" alt="" width="120px">
+                                                <img class="me-3 me-sm-4" src="imagenes/cod<?php echo $key;?>/<?php echo $datos_items['foto'];?>" alt="" width="120px">
                                                   <?php
                                                 }
                                                 ?>
-                                                <div class="media-body">
+                                                <div class="flex-grow-1">
                                                   <div class="d-flex justify-content-between food-card-title">
                                                     <h4><?php echo utf8_encode($datos_items['nombre']);?></h4>
                                                     <h3 class="price-tag"><?php echo moneda_chilena($datos_items['precio']);?></h3>
@@ -353,14 +351,12 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         </div>
     </div>
 </section>
-<div id="myModal" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-lg-center" id="exampleModalLabel">Selección de Producto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
         El producto seleccionado, ha sido agregado sin problemas!!!
@@ -387,11 +383,11 @@ if(isset($key))
             {
              ?>
              <form action="grcomentarios.php" method="post">
-              <div class="form-group">
+              <div class="mb-3">
                 <label for="usr">Nombre:</label>
                 <input type="text" class="form-control" id="usuario" name="usuario" value="<?php echo $_SESSION['nombre'];?>">
               </div>
-              <div class="form-group">
+              <div class="mb-3">
                 <label for="comment">Comentario:</label>
                 <textarea class="form-control" rows="5" id="comentario" name="comentario"></textarea>
               </div>
@@ -442,12 +438,9 @@ if(isset($key))
 	</footer>
 
 
-  <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
+  <script src="vendors/jquery/jquery-3.7.1.min.js"></script>
   <script src="vendors/bootstrap/bootstrap.bundle.min.js"></script>
   <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="vendors/nice-select/jquery.nice-select.min.js"></script>
-  <script src="vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/controladorajax.js"></script>
 </body>

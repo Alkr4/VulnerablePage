@@ -1,14 +1,17 @@
 // JavaScript Document
 
 $(document).ready(function(){
-   $('.button').click(function(){
+   $('.button').on('click', function(e){
+     e.preventDefault();
      agregaritems($(this).attr('id'));
    });
 
-   $('.elim').click(function(){
+   $('.elim').on('click', function(e){
+      e.preventDefault();
       eliminaritems($(this).attr('id'));
     });
-    $('.limpiar').click(function(){
+    $('.limpiar').on('click', function(e){
+      e.preventDefault();
       eliminartodo();
     });
  });
@@ -18,10 +21,10 @@ function agregaritems(id)
 	$.ajax({
             type: "POST",
             url: 'carrito.php',
-            data: "op=1&iditems="+id,
-            success: function(response)
+            data: { op: 1, iditems: id },
+            success: function()
             {
-				$('#myModal').modal('show');
+				bootstrap.Modal.getOrCreateInstance(document.getElementById('myModal')).show();
             }
        });
 }
@@ -31,8 +34,8 @@ function eliminaritems(pos)
 	$.ajax({
             type: "POST",
             url: 'carrito.php',
-            data: "op=2&pos="+pos,
-            success: function(response)
+            data: { op: 2, pos: pos },
+            success: function()
             {
 				location.reload();
             }
@@ -44,8 +47,8 @@ function eliminartodo()
 	$.ajax({
             type: "POST",
             url: 'carrito.php',
-            data: "op=3",
-            success: function(response)
+            data: { op: 3 },
+            success: function()
             {
 				location.reload();
             }

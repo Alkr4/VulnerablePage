@@ -11,7 +11,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
       <div class="row">
         <div class="col-lg-4">
           <div style="text-align: center;">
-            <div class="media">
+            <div class="d-flex">
               <img class="logosintituciones" src="img/logo.png" width="170px" alt="">
             </div><br><br>
           </div>  
@@ -57,7 +57,7 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
         </div>
         <div class="col-lg-4">
           <div class="carro">
-            <div class="media float-right">
+            <div class="d-flex float-end">
               <a class="volver" href="index.php?id=<?php echo $_GET['keyid'];?>">
               Volver a la Carta
               </a>&nbsp;&nbsp;
@@ -138,13 +138,8 @@ $datos_restorant=mysqli_fetch_array($result_restorant);
 		</div>
 	</footer>
 
-  <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
+  <script src="vendors/jquery/jquery-3.7.1.min.js"></script>
   <script src="vendors/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-  <script src="vendors/nice-select/jquery.nice-select.min.js"></script>
-  <script src="vendors/Magnific-Popup/jquery.magnific-popup.min.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script>
-  <script src="js/main.js"></script>
   <script src="js/controladorajax.js"></script>
 </body>
 </html>
