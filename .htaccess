@@ -13,3 +13,7 @@ Options -Indexes
 <Files "setup.php">
     Require all denied
 </Files>
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+</IfModule>
